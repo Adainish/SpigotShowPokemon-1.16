@@ -1,0 +1,7 @@
+name: SpigotShowPokemon
+version: '${version}'
+main: io.github.adainish.spigotshowpokemon.SpigotShowPokemon
+api-version: 1.16
+prefix: SpigotShowPokemon
+authors: [ Winglet ]
+description: Plugin for Spigot 1.16.5 allowing players to show their pokemon in chat for Pixelmon Reforged
