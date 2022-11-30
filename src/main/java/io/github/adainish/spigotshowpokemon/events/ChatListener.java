@@ -39,19 +39,19 @@ public class ChatListener implements Listener {
         String newMSG = msg.replace("pokemon", "")
                 .replace("poke", "")
                 .replace("p", "")
-                .replace("{", "")
-                .replace("}", "");
+                .replace("[", "")
+                .replace("]", "");
 
         return Integer.parseInt(newMSG);
     }
     @EventHandler
     public void onChatEvent(AsyncPlayerChatEvent event) {
         Map<String, BaseComponent[]> placeholders = new HashMap<>();
-        if (event.getMessage().contains("{pokemon")) {
+        if (event.getMessage().contains("[pokemon")) {
             event.setCancelled(true);
 
-            int start = event.getMessage().indexOf("{");
-            int last = event.getMessage().indexOf("}");
+            int start = event.getMessage().indexOf("[");
+            int last = event.getMessage().indexOf("]");
 
             String pokemonMSG = event.getMessage().substring(start, last);
             Pokemon pokemon = null;
@@ -68,7 +68,7 @@ public class ChatListener implements Listener {
                     if (pokemon == null)
                         return;
 
-                    String key = "{pokemon" + selectedSlot + "}";
+                    String key = "[pokemon" + selectedSlot + "]";
                     placeholders.put(key, buildPokemonStats(pokemon));
                 } catch (Exception partyLength) {
                     partyLength.printStackTrace();
@@ -116,8 +116,7 @@ public class ChatListener implements Listener {
         int ivSum = 0;
         int evSum = 0;
         Moveset moveset = pokemon.getMoveset();
-
-        heldItem = !pokemon.getHeldItem().isEmpty() ? pokemon.getHeldItem().getDisplayName().getUnformattedComponentText() : "Nothing";
+        heldItem = !pokemon.getHeldItem().isEmpty() ? pokemon.getHeldItem().getDisplayName().getString() : "Nothing";
 
         if (stats != null) {
             eVsStore = pokemon.getEVs();
@@ -188,12 +187,15 @@ public class ChatListener implements Listener {
                 (isTrio ? "&7Ruby Enchant: &e" + (numEnchants != 0 ? numEnchants + " Available" : "None Available") + "\n&r" : "") +
                 (!pokemon.getHeldItem().isEmpty() ? "&7Held Item: &e" + heldItem + "\n&r" : "") +
                 "&7Ability: &e" + pokemon.getAbility().getName() + ((pokemon.getForm().getAbilities().hasHiddenAbilities() && pokemon.getAbility().equals(pokemon.getForm().getAbilities().getHiddenAbilities()[0])) ? " &7(&6HA&7)&r" : "") + "\n&r" +
-                "&7Nature: &e" + natureColor + nature.name() + " &7(&a+" + nature.getIncreasedStat() + " &7| &c-" + nature.getDecreasedStat() + "&7)" + "\n&r" +
+                "&7Nature: &e" + natureColor + nature.name().toLowerCase() + " &7(&a+" + nature.getIncreasedStat().name().toLowerCase() + " &7| &c-" + nature.getDecreasedStat().name().toLowerCase() + "&7)" + "\n&r" +
                 "&7Gender: " + pokeGender + "\n&r" +
                 "&7Size: &e" + pokemon.getGrowth().name() + "\n&r" +
                 "&7Happiness: &e" + pokemon.getFriendship() + "\n&r" +
                 "&7Hidden Power: &e" + HiddenPower.getHiddenPowerType(pokemon.getOwnerPlayer(), pokemon, pokemon.getStats().getIVs(), "").getLocalizedName() + "\n&r" +
                 "&7Caught Ball: &e" + pokemon.getBall().getLocalizedName() + "\n\n&r" +
+                "&7OT: &e" + pokemon.getOriginalTrainer() + "\n&r" +
+
+                "&7Hidden Power: &e" + HiddenPower.getHiddenPowerType(pokemon.getOwnerPlayer(), pokemon, ivStore, "").getName() + "\n\n&r" +
 
                 "&7IVs: &e" + ivSum + "&7/&e186 &7(&a" + df.format((int) (((double) ivSum / 186) * 100)) + "%&7) \n"
                 + "&cHP: " + ht[0] + ivStore.getStat(BattleStatsType.HP) + " &7/ " + "&6Atk: " + ht[1] + ivStore.getStat(BattleStatsType.ATTACK) + " &7/ " + "&eDef: " + ht[2] + ivStore.getStat(BattleStatsType.DEFENSE) + "\n"
